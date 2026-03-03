@@ -1,0 +1,14 @@
+url: https://sims1253.github.io/groots/
+
+template:
+  bootstrap: 5
+
+reference:
+  - title: "Reference"
+    contents:
+      - hello
+
+articles:
+  - title: "Getting Started"
+    contents:
+      - getting-started

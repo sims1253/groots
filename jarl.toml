@@ -1,0 +1,5 @@
+[rules]
+default = true
+
+[rules.style]
+line_length = 100

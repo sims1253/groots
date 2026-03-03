@@ -1,0 +1,12 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+*.tar.gz
+*.Rcheck/
+docs/
+man/figures/
+tests/testthat/_snaps/
+.DS_Store
+Thumbs.db
+.vscode/

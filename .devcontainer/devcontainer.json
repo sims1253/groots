@@ -1,0 +1,13 @@
+{
+  "name": "R Package Development",
+  "image": "rocker/tidyverse:latest",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "REditorSupport.r",
+        "RDebugger.r-debugger"
+      ]
+    }
+  },
+  "postCreateCommand": "Rscript -e \"options(repos = c(positdev = 'https://posit-dev.r-universe.dev', CRAN = 'https://cloud.r-project.org')); if (!requireNamespace('pak', quietly = TRUE)) install.packages('pak'); pak::pak(); install.packages(c('air', 'jarl'))\""
+}

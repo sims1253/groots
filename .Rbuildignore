@@ -1,0 +1,12 @@
+^LICENSE\.md$
+^\.github$
+^\.devcontainer$
+^README\.Rmd$
+^codecov\.yml$
+^data-raw$
+^docs$
+^Makefile$
+^\.editorconfig$
+^\.lintr$
+^air\.toml$
+^jarl\.toml$

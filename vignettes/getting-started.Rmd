@@ -1,0 +1,40 @@
+---
+title: "Getting Started with groots"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting Started with groots}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+`groots` ships with a minimal example so the scaffold passes basic checks
+immediately. Replace the example function, tests, and documentation with your
+real package API as soon as you start development.
+
+## Installation
+
+```{r, eval = FALSE}
+# install.packages("pak")
+pak::pak("sims1253/groots")
+```
+
+## Example
+
+```{r}
+library(groots)
+hello()
+hello("team")
+```
+
+## Next Steps
+
+- Replace `hello()` with domain-specific functions.
+- Update `DESCRIPTION`, `README`, and this vignette.
+- Add tests for each exported function before release.

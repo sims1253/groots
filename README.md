@@ -1,0 +1,53 @@
+
+<!-- README.md is generated from README.Rmd. Re-knit after editing. -->
+
+# groots
+
+<!-- badges: start -->
+
+[![R-CMD-check](https://github.com/sims1253/groots/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/sims1253/groots/actions/workflows/R-CMD-check.yaml)
+[![pkgdown](https://github.com/sims1253/groots/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/sims1253/groots/actions/workflows/pkgdown.yaml)
+[![Codecov test
+coverage](https://codecov.io/gh/sims1253/groots/branch/main/graph/badge.svg)](https://app.codecov.io/gh/sims1253/groots)
+<!-- badges: end -->
+
+This repository was bootstrapped with `create_r_package.R` and includes
+the usual package plumbing: tests, CI, pkgdown, coverage, `air`
+formatting, `jarl` plus `lintr` linting, and a dev container.
+
+## Installation
+
+``` r
+# install.packages("pak")
+pak::pak("sims1253/groots")
+```
+
+## Example
+
+``` r
+groots::hello()
+groots::hello("team")
+```
+
+## Development
+
+``` r
+# one-time
+if (!requireNamespace("pak", quietly = TRUE)) install.packages("pak")
+pak::pak(c("devtools", "pkgdown", "lintr"))
+install.packages(
+  c("air", "jarl"),
+  repos = c("https://posit-dev.r-universe.dev", "https://cloud.r-project.org")
+)
+
+# common tasks
+devtools::document()
+devtools::build_readme()
+devtools::build_vignettes()
+devtools::test()
+devtools::check()
+air::format_package()
+jarl::lint_package()
+lintr::lint_package()
+pkgdown::build_site()
+```
