@@ -1,4 +1,4 @@
-# API Contracts: `groots` and `bayesguide`
+# API Contracts: `dagriculture` and `bayesguide`
 
 **Status:** Draft
 **Date:** 2026-03-03
@@ -16,7 +16,7 @@ Persistence and schema rules belong in
 
 - Public functions must have stable, explicit return types.
 - Query functions must not mutate persisted state.
-- `groots_*` functions are value-in, value-out.
+- `dagriculture_*` functions are value-in, value-out.
 - `bg_*` functions may persist and mutate through an explicit handle.
 - Contract violations should raise typed errors rather than silently coercing
   ambiguous input.
@@ -58,16 +58,16 @@ Rules:
 
 ## Canonical Public Types
 
-### `groots`
+### `dagriculture`
 
-#### `groots_graph`
+#### `dagriculture_graph`
 
 Fields:
 
-- `registry`: `groots_registry`
-- `nodes`: named map of `groots_node`
-- `edges`: named map of `groots_edge`
-- `gates`: named map of `groots_gate`
+- `registry`: `dagriculture_registry`
+- `nodes`: named map of `dagriculture_node`
+- `edges`: named map of `dagriculture_edge`
+- `gates`: named map of `dagriculture_gate`
 - `version`: scalar integer
 - `metadata`: named list
 
@@ -77,18 +77,18 @@ Invariants:
 - every node kind exists in `registry`
 - every gate targets an existing edge
 - `version` increases by exactly `1` in the returned graph for each successful
-  `groots_*` mutator call
+  `dagriculture_*` mutator call
 - divergent copies may legitimately reach the same numeric version; only
   `bayesguide` may use persisted compare-and-swap checks to detect conflicts
 
-#### `groots_registry`
+#### `dagriculture_registry`
 
 Fields:
 
-- `kinds`: named map of `groots_kind`
+- `kinds`: named map of `dagriculture_kind`
 - `metadata`: named list
 
-#### `groots_kind`
+#### `dagriculture_kind`
 
 Fields:
 
@@ -103,7 +103,7 @@ Rules:
 - `param_schema` must be declarative plain data
 - no executable closures in the public contract
 
-#### `groots_node`
+#### `dagriculture_node`
 
 Fields:
 
@@ -121,7 +121,7 @@ Rules:
   or source files
 - `upstream_blocked` means an upstream node is structurally blocked or invalid
 
-#### `groots_edge`
+#### `dagriculture_edge`
 
 Fields:
 
@@ -131,7 +131,7 @@ Fields:
 - `type`: scalar string
 - `metadata`: named list
 
-#### `groots_gate`
+#### `dagriculture_gate`
 
 Fields:
 
@@ -140,7 +140,7 @@ Fields:
 - `status`: `pending` or `resolved`
 - `metadata`: named list
 
-#### `groots_plan`
+#### `dagriculture_plan`
 
 Fields:
 
@@ -195,7 +195,7 @@ Fields:
 - `project_id`: scalar string
 - `name`: scalar string
 - `path`: scalar string
-- `graph`: `groots_graph`
+- `graph`: `dagriculture_graph`
 - `registry_bindings`: named map of `bg_registry_binding`
 - `decisions`: named map of `bg_decision_record`
 - `gate_specs`: named map of `bg_pending_gate`
@@ -290,7 +290,7 @@ Fields:
 
 Fields:
 
-- `graph_plan`: `groots_plan`
+- `graph_plan`: `dagriculture_plan`
 - `targets`: character vector
 - `eligible`: character vector
 - `blocked`: named list mapping node id to reason
@@ -303,7 +303,7 @@ Fields:
 
 Rules:
 
-- `eligible` is the structurally eligible set from `groots_plan`
+- `eligible` is the structurally eligible set from `dagriculture_plan`
 - `cache_hits` and `missing_results` are `bayesguide` overlays on top of that
   structural set
 - `cache_hits` are determined by computing predicted intent-based fingerprints
@@ -358,73 +358,73 @@ Rules:
   intent plus upstream fingerprints, not a hash of the materialized artifact
   bytes
 
-## `groots` Public API
+## `dagriculture` Public API
 
 ### Constructors
 
 ```r
-groots_kind(name, input_contract = NULL, output_type = NULL, param_schema = NULL)
-groots_registry(...)
-groots_graph(registry)
+dagriculture_kind(name, input_contract = NULL, output_type = NULL, param_schema = NULL)
+dagriculture_registry(...)
+dagriculture_graph(registry)
 ```
 
 ### Graph Editing
 
 ```r
-groots_add_node(graph, id, kind, label = NULL, params = list(), metadata = list())
-groots_update_node(graph, node_id, label = NULL, params = NULL, metadata = NULL)
-groots_remove_node(graph, node_id)
+dagriculture_add_node(graph, id, kind, label = NULL, params = list(), metadata = list())
+dagriculture_update_node(graph, node_id, label = NULL, params = NULL, metadata = NULL)
+dagriculture_remove_node(graph, node_id)
 
-groots_add_edge(graph, from, to, type = "data", id = NULL, metadata = list())
-groots_remove_edge(graph, edge_id)
+dagriculture_add_edge(graph, from, to, type = "data", id = NULL, metadata = list())
+dagriculture_remove_edge(graph, edge_id)
 
-groots_add_gate(graph, edge_id, id = NULL, metadata = list())
-groots_resolve_gate(graph, id)
-groots_reopen_gate(graph, id)
-groots_remove_gate(graph, id)
+dagriculture_add_gate(graph, edge_id, id = NULL, metadata = list())
+dagriculture_resolve_gate(graph, id)
+dagriculture_reopen_gate(graph, id)
+dagriculture_remove_gate(graph, id)
 ```
 
 ### Queries
 
 ```r
-groots_node(graph, node_id)
-groots_edge(graph, edge_id)
-groots_gate(graph, id)
+dagriculture_node(graph, node_id)
+dagriculture_edge(graph, edge_id)
+dagriculture_gate(graph, id)
 
-groots_nodes(graph)
-groots_edges(graph)
-groots_gates(graph)
+dagriculture_nodes(graph)
+dagriculture_edges(graph)
+dagriculture_gates(graph)
 
-groots_upstream(graph, node_id)
-groots_downstream(graph, node_id)
-groots_ancestors(graph, node_id)
-groots_descendants(graph, node_id)
-groots_has_path(graph, from, to)
-groots_roots(graph)
-groots_leaves(graph)
-groots_topo_order(graph, subset = NULL)
+dagriculture_upstream(graph, node_id)
+dagriculture_downstream(graph, node_id)
+dagriculture_ancestors(graph, node_id)
+dagriculture_descendants(graph, node_id)
+dagriculture_has_path(graph, from, to)
+dagriculture_roots(graph)
+dagriculture_leaves(graph)
+dagriculture_topo_order(graph, subset = NULL)
 ```
 
 ### State And Planning
 
 ```r
-groots_recompute_state(graph)
-groots_eligible(graph)
-groots_blocked(graph)
-groots_terminal(graph)
-groots_plan(graph, targets = NULL)
+dagriculture_recompute_state(graph)
+dagriculture_eligible(graph)
+dagriculture_blocked(graph)
+dagriculture_terminal(graph)
+dagriculture_plan(graph, targets = NULL)
 ```
 
-### `groots` Behavioral Contract
+### `dagriculture` Behavioral Contract
 
-- All mutating functions return a new `groots_graph`.
-- No `groots` function performs I/O or depends on global state.
-- `groots_recompute_state()` returns a new `groots_graph` with recomputed
+- All mutating functions return a new `dagriculture_graph`.
+- No `dagriculture` function performs I/O or depends on global state.
+- `dagriculture_recompute_state()` returns a new `dagriculture_graph` with recomputed
   structural state only.
-- `groots_plan()` must not encode cache or execution assumptions.
+- `dagriculture_plan()` must not encode cache or execution assumptions.
 - A structurally `ready` node may still be skipped by `bayesguide` when a
   reusable result exists; completion lives in artifact/result overlays, not in
-  `groots_node$state`.
+  `dagriculture_node$state`.
 
 ## `bayesguide` Public API
 
@@ -455,7 +455,7 @@ bg_invalidate(project, node_id, recursive = TRUE)
 
 `bg_invalidate(project, node_id, recursive = TRUE)` persistence effect:
 
-- invalidation does not alter structural state in `groots`
+- invalidation does not alter structural state in `dagriculture`
 - it updates the `bg_artifact_index` by marking the currently active indexed
   result for the target node (and optionally downstream nodes when
   `recursive = TRUE`) as `status = "superseded"`
@@ -550,7 +550,7 @@ bg_gc(project, days = NULL)
   but those wrappers sit above and must not redefine the canonical low-level
   return contracts
 - `bg_add_gate()` and `bg_reopen_gate()` return `bg_pending_gate`.
-- `bg_answer_gate()` must resolve the structural gate in `groots`, persist the
+- `bg_answer_gate()` must resolve the structural gate in `dagriculture`, persist the
   semantic answer, and return `bg_decision_record`.
 - `bg_pending_gates()` returns a named map of `bg_pending_gate_view` and must
   perform the graph join needed for analyst-facing endpoint context.
@@ -561,16 +561,16 @@ bg_gc(project, days = NULL)
 
 ## Typed Error Model
 
-### `groots` Errors
+### `dagriculture` Errors
 
-- `groots_error_invalid_argument`
-- `groots_error_unknown_kind`
-- `groots_error_duplicate_id`
-- `groots_error_not_found`
-- `groots_error_cycle`
-- `groots_error_contract_violation`
-- `groots_error_not_eligible`
-- `groots_error_state_conflict`
+- `dagriculture_error_invalid_argument`
+- `dagriculture_error_unknown_kind`
+- `dagriculture_error_duplicate_id`
+- `dagriculture_error_not_found`
+- `dagriculture_error_cycle`
+- `dagriculture_error_contract_violation`
+- `dagriculture_error_not_eligible`
+- `dagriculture_error_state_conflict`
 
 ### `bayesguide` Errors
 
@@ -606,7 +606,7 @@ When relevant, `details` should include ids or paths that localize the failure.
 
 ## Canonical Public Return Shapes
 
-### `groots_plan`
+### `dagriculture_plan`
 
 ```r
 list(

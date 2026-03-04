@@ -1,6 +1,6 @@
-describe("groots_kind()", {
+describe("dagriculture_kind()", {
   it("creates a valid kind record with correct shape", {
-    kind <- groots_kind(
+    kind <- dagriculture_kind(
       name = "data_source",
       output_type = "data.frame",
       param_schema = list(required = c("path"))
@@ -17,17 +17,17 @@ describe("groots_kind()", {
 
   it("rejects executable closures in param_schema", {
     expect_error(
-      groots_kind("bad", param_schema = list(fn = function() 1)),
-      class = "groots_error_invalid_argument"
+      dagriculture_kind("bad", param_schema = list(fn = function() 1)),
+      class = "dagriculture_error_invalid_argument"
     )
   })
 })
 
-describe("groots_registry()", {
+describe("dagriculture_registry()", {
   it("creates a registry from kinds", {
-    kind1 <- groots_kind("source")
-    kind2 <- groots_kind("fit")
-    reg <- groots_registry(kind1, kind2)
+    kind1 <- dagriculture_kind("source")
+    kind2 <- dagriculture_kind("fit")
+    reg <- dagriculture_registry(kind1, kind2)
 
     expect_type(reg, "list")
     expect_identical(names(reg), c("kinds", "metadata"))
@@ -35,10 +35,10 @@ describe("groots_registry()", {
   })
 })
 
-describe("groots_graph()", {
+describe("dagriculture_graph()", {
   it("creates an empty graph with version 0 and required fields", {
-    reg <- groots_registry(groots_kind("test"))
-    graph <- groots_graph(reg)
+    reg <- dagriculture_registry(dagriculture_kind("test"))
+    graph <- dagriculture_graph(reg)
 
     expect_type(graph, "list")
     expect_identical(graph$version, 0L)

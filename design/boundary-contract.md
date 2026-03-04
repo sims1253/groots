@@ -1,4 +1,4 @@
-# Boundary Contract: `groots` and `bayesguide`
+# Boundary Contract: `dagriculture` and `bayesguide`
 
 **Status:** Draft
 **Date:** 2026-03-03
@@ -7,8 +7,8 @@
 
 Define the conceptual boundary for the greenfield rewrite:
 
-1. `groots`: a pure, value-oriented graph library
-2. `bayesguide`: a project-oriented workflow orchestrator built on top of `groots`
+1. `dagriculture`: a pure, value-oriented graph library
+2. `bayesguide`: a project-oriented workflow orchestrator built on top of `dagriculture`
 
 This document is about ownership and behavioral boundaries, not storage layout.
 Persistence details belong in
@@ -20,7 +20,7 @@ Concrete public signatures belong in
 
 The split is:
 
-- `groots` owns graph structure, graph validity, structural readiness, and
+- `dagriculture` owns graph structure, graph validity, structural readiness, and
   generic blockers on edges.
 - `bayesguide` owns projects, execution, persistence, artifact/result
   lifecycle, invalidation, recovery, exports, and domain semantics.
@@ -29,9 +29,9 @@ The rewrite should preserve that split even if implementation details change.
 
 ## Design Constraints
 
-- `groots` is value-oriented: no globals, no file I/O, no async workers, no
+- `dagriculture` is value-oriented: no globals, no file I/O, no async workers, no
   project handles.
-- `groots` must remain serializable as plain data.
+- `dagriculture` must remain serializable as plain data.
 - `bayesguide` may be stateful and persistent, but the core API should use
   explicit handles rather than an implicit global current project.
 - The alpha should optimize for four user stories:
@@ -40,9 +40,9 @@ The rewrite should preserve that split even if implementation details change.
   - background execution with observable progress
   - reproducible handoff
 
-## What `groots` Owns
+## What `dagriculture` Owns
 
-`groots` owns:
+`dagriculture` owns:
 
 - node, edge, and gate topology
 - acyclicity and structural validity
@@ -64,7 +64,7 @@ The rewrite should preserve that split even if implementation details change.
   - blocked nodes
   - unresolved gates
 
-`groots` does not own freshness. It does not know whether a previously computed
+`dagriculture` does not own freshness. It does not know whether a previously computed
 result is reusable, stale, superseded, missing, or cached.
 
 In particular:
@@ -73,12 +73,12 @@ In particular:
   absent, not that an artifact or source file is missing
 - `upstream_blocked` is structural only: it means an upstream node is
   structurally blocked or invalid
-- a fully executed workflow may still appear entirely `ready` in `groots`
+- a fully executed workflow may still appear entirely `ready` in `dagriculture`
   because "completed" is a `bayesguide` result-layer concept, not a graph state
 
-## What `groots` Must Not Own
+## What `dagriculture` Must Not Own
 
-`groots` must not own:
+`dagriculture` must not own:
 
 - runtime execution state (`queued`, `running`, `succeeded`, `failed`, etc.)
 - artifact manifests or CAS indexes
@@ -110,7 +110,7 @@ In particular:
 
 The gate split is intentionally two-layered:
 
-- `groots` gate:
+- `dagriculture` gate:
   - generic blocker attached to an edge
   - only `id`, `edge_id`, `status`, and structural metadata
 - `bayesguide` gate spec:
@@ -120,13 +120,13 @@ The gate split is intentionally two-layered:
   - optional attachments
   - analyst-facing context
 
-This keeps the generic blocker primitive in `groots` without leaking workflow
+This keeps the generic blocker primitive in `dagriculture` without leaking workflow
 semantics into the graph library.
 
 `bg_answer_gate()` is the bridge operation:
 
 - it validates and records the semantic answer in `bayesguide`
-- it must also invoke `groots_resolve_gate()` internally so the structural
+- it must also invoke `dagriculture_resolve_gate()` internally so the structural
   blocker is cleared in the graph before persistence completes
 
 ## Data-Flow Contract
@@ -154,7 +154,7 @@ This is the core orchestration model:
 - a structurally `ready` node may be skipped by `bayesguide` when `bg_plan()`
   classifies it as a cache hit
 
-That makes `groots` structurally pure while still giving `bayesguide` an explicit
+That makes `dagriculture` structurally pure while still giving `bayesguide` an explicit
 execution contract.
 
 ## Fingerprint Contract
@@ -182,13 +182,13 @@ Rules:
   `missing_results`
 
 This keeps cache planning eager and deterministic without introducing runtime
-execution state into `groots`.
+execution state into `dagriculture`.
 
 ## Registry Contract
 
 There are two related registries:
 
-- embedded `groots` registry:
+- embedded `dagriculture` registry:
   - persisted with the graph snapshot
   - declarative only
   - authoritative for structural validation
@@ -376,7 +376,7 @@ Throw away:
 
 The current draft resolves these previously open choices:
 
-1. Keep structural node states in `groots`.
+1. Keep structural node states in `dagriculture`.
 2. Default runtime registry compatibility to `compatible`, with `upgraded`
    allowed when an explicit upgrader ran.
 3. Keep alpha eager-only for input materialization.
@@ -385,7 +385,7 @@ The current draft resolves these previously open choices:
 6. Keep the current id-and-handle mutation return model for alpha.
 7. Ship pipe-friendly convenience wrappers in alpha as ergonomic sugar, while
    keeping the low-level return contracts canonical.
-8. Use a shared cross-package contract fixture suite to validate `groots` /
+8. Use a shared cross-package contract fixture suite to validate `dagriculture` /
    `bayesguide` boundary assumptions.
 
 ## Open Questions

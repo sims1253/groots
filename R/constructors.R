@@ -1,11 +1,11 @@
-#' Define a groots kind
+#' Define a dagriculture kind
 #'
 #' @param name The name of the kind.
 #' @param input_contract Input contract list.
 #' @param output_type Output type string.
 #' @param param_schema Parameter schema.
 #' @export
-groots_kind <- function(name, input_contract = NULL, output_type = NULL, param_schema = NULL) {
+dagriculture_kind <- function(name, input_contract = NULL, output_type = NULL, param_schema = NULL) {
   if (!is.null(param_schema)) {
     has_closure <- function(x) {
       if (is.function(x)) {
@@ -17,8 +17,8 @@ groots_kind <- function(name, input_contract = NULL, output_type = NULL, param_s
       FALSE
     }
     if (has_closure(param_schema)) {
-      abort_groots(
-        "groots_error_invalid_argument",
+      abort_dagriculture(
+        "dagriculture_error_invalid_argument",
         "Executable closures are not allowed in param_schema."
       )
     }
@@ -33,11 +33,11 @@ groots_kind <- function(name, input_contract = NULL, output_type = NULL, param_s
   )
 }
 
-#' Define a groots registry
+#' Define a dagriculture registry
 #'
-#' @param ... \code{groots_kind} objects.
+#' @param ... \code{dagriculture_kind} objects.
 #' @export
-groots_registry <- function(...) {
+dagriculture_registry <- function(...) {
   kinds_list <- list(...)
   kinds_env <- list()
   for (k in kinds_list) {
@@ -49,11 +49,11 @@ groots_registry <- function(...) {
   )
 }
 
-#' Create an empty groots graph
+#' Create an empty dagriculture graph
 #'
-#' @param registry A \code{groots_registry} object.
+#' @param registry A \code{dagriculture_registry} object.
 #' @export
-groots_graph <- function(registry) {
+dagriculture_graph <- function(registry) {
   list(
     registry = registry,
     nodes = stats::setNames(list(), character(0)),

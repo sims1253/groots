@@ -1,4 +1,4 @@
-# Persistence Specification: `bayesguide` / `groots`
+# Persistence Specification: `bayesguide` / `dagriculture`
 
 **Status:** Draft
 **Date:** 2026-03-03
@@ -271,7 +271,7 @@ Recovery rule:
 
 Schema:
 
-- `schema_name = "groots_graph_snapshot"`
+- `schema_name = "dagriculture_graph_snapshot"`
 - `schema_version = 1`
 
 Required fields:
@@ -284,7 +284,7 @@ Required fields:
 - `gates`
 - `metadata`
 
-The embedded `registry` is the declarative `groots` registry. It must be
+The embedded `registry` is the declarative `dagriculture` registry. It must be
 serializable plain data and is authoritative for structural validation.
 
 Representation rule:
@@ -534,7 +534,7 @@ Required fields:
 
 ```json
 {
-  "schema_name": "groots_graph_snapshot",
+  "schema_name": "dagriculture_graph_snapshot",
   "schema_version": 1,
   "graph_id": "graph_01JNB5R8KQ3MF2B57CBK6K4Y2J",
   "version": 7,

@@ -4,61 +4,61 @@ output: github_document
 
 <!-- README.md is generated from README.Rmd. Re-knit after editing. -->
 
-# groots
+# dagriculture
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/sims1253/groots/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/sims1253/groots/actions/workflows/R-CMD-check.yaml)
-[![pkgdown](https://github.com/sims1253/groots/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/sims1253/groots/actions/workflows/pkgdown.yaml)
-[![Codecov test coverage](https://codecov.io/gh/sims1253/groots/branch/main/graph/badge.svg)](https://app.codecov.io/gh/sims1253/groots)
+[![R-CMD-check](https://github.com/sims1253/dagriculture/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/sims1253/dagriculture/actions/workflows/R-CMD-check.yaml)
+[![pkgdown](https://github.com/sims1253/dagriculture/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/sims1253/dagriculture/actions/workflows/pkgdown.yaml)
+[![Codecov test coverage](https://codecov.io/gh/sims1253/dagriculture/branch/main/graph/badge.svg)](https://app.codecov.io/gh/sims1253/dagriculture)
 <!-- badges: end -->
 
-`groots` is a pure, value-oriented graph library for R. It is designed to manage graph structures, topological dependencies, structural validity, and planning, specifically without coupling itself to external state or runtime execution engines. 
+`dagriculture` is a pure, value-oriented graph library for R. It is designed to manage graph structures, topological dependencies, structural validity, and planning, specifically without coupling itself to external state or runtime execution engines. 
 
 ## Installation
 
 ```r
 # install.packages("pak")
-pak::pak("sims1253/groots")
+pak::pak("sims1253/dagriculture")
 ```
 
 ## Example
 
-`groots` provides a purely functional API to build graphs, establish dependencies, and track structural blockers such as "gates":
+`dagriculture` provides a purely functional API to build graphs, establish dependencies, and track structural blockers such as "gates":
 
 ```{r example}
-library(groots)
+library(dagriculture)
 
 # 1. Define the kinds of nodes allowed in your graph
-registry <- groots_registry(
-  groots_kind("data_source"),
-  groots_kind("transform")
+registry <- dagriculture_registry(
+  dagriculture_kind("data_source"),
+  dagriculture_kind("transform")
 )
 
 # 2. Create an empty graph
-graph <- groots_graph(registry)
+graph <- dagriculture_graph(registry)
 
 # 3. Add nodes and edges
 graph <- graph |>
-  groots_add_node("raw_data", "data_source") |>
-  groots_add_node("cleaned_data", "transform") |>
-  groots_add_edge(from = "raw_data", to = "cleaned_data", id = "edge_1")
+  dagriculture_add_node("raw_data", "data_source") |>
+  dagriculture_add_node("cleaned_data", "transform") |>
+  dagriculture_add_edge(from = "raw_data", to = "cleaned_data", id = "edge_1")
 
 # 4. Add a structural blocker (gate) to an edge
-graph <- groots_add_gate(graph, edge_id = "edge_1", id = "review_gate")
+graph <- dagriculture_add_gate(graph, edge_id = "edge_1", id = "review_gate")
 
 # 5. Compute the structural state
-graph <- groots_recompute_state(graph)
+graph <- dagriculture_recompute_state(graph)
 
 # See which nodes are eligible to proceed
-groots_eligible(graph)
+dagriculture_eligible(graph)
 
 # See which nodes are blocked, and why
-groots_blocked(graph)
+dagriculture_blocked(graph)
 
 # 6. Resolve the gate to unblock the downstream node
-graph <- groots_resolve_gate(graph, "review_gate") |>
-  groots_recompute_state()
+graph <- dagriculture_resolve_gate(graph, "review_gate") |>
+  dagriculture_recompute_state()
 
-groots_eligible(graph)
+dagriculture_eligible(graph)
 ```
 

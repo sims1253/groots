@@ -1,18 +1,18 @@
-#' Add a node to a groots graph
+#' Add a node to a dagriculture graph
 #'
-#' @param graph A \code{groots_graph}.
+#' @param graph A \code{dagriculture_graph}.
 #' @param id Node ID.
 #' @param kind Node kind.
 #' @param label Node label.
 #' @param params Node parameters.
 #' @param metadata Node metadata.
 #' @export
-groots_add_node <- function(graph, id, kind, label = NULL, params = list(), metadata = list()) {
+dagriculture_add_node <- function(graph, id, kind, label = NULL, params = list(), metadata = list()) {
   if (!kind %in% names(graph$registry$kinds)) {
-    abort_groots("groots_error_unknown_kind", "Unknown node kind.")
+    abort_dagriculture("dagriculture_error_unknown_kind", "Unknown node kind.")
   }
   if (id %in% names(graph$nodes)) {
-    abort_groots("groots_error_duplicate_id", "Duplicate node id.")
+    abort_dagriculture("dagriculture_error_duplicate_id", "Duplicate node id.")
   }
 
   node <- list(
@@ -30,17 +30,17 @@ groots_add_node <- function(graph, id, kind, label = NULL, params = list(), meta
   graph
 }
 
-#' Update a node in a groots graph
+#' Update a node in a dagriculture graph
 #'
-#' @param graph A \code{groots_graph}.
+#' @param graph A \code{dagriculture_graph}.
 #' @param node_id Node ID.
 #' @param label Node label.
 #' @param params Node parameters.
 #' @param metadata Node metadata.
 #' @export
-groots_update_node <- function(graph, node_id, label = NULL, params = NULL, metadata = NULL) {
+dagriculture_update_node <- function(graph, node_id, label = NULL, params = NULL, metadata = NULL) {
   if (!node_id %in% names(graph$nodes)) {
-    abort_groots("groots_error_not_found", "Node not found.")
+    abort_dagriculture("dagriculture_error_not_found", "Node not found.")
   }
 
   node <- graph$nodes[[node_id]]
@@ -59,39 +59,39 @@ groots_update_node <- function(graph, node_id, label = NULL, params = NULL, meta
   graph
 }
 
-#' Remove a node from a groots graph
+#' Remove a node from a dagriculture graph
 #'
-#' @param graph A \code{groots_graph}.
+#' @param graph A \code{dagriculture_graph}.
 #' @param node_id Node ID.
 #' @export
-groots_remove_node <- function(graph, node_id) {
+dagriculture_remove_node <- function(graph, node_id) {
   if (!node_id %in% names(graph$nodes)) {
-    abort_groots("groots_error_not_found", "Node not found.")
+    abort_dagriculture("dagriculture_error_not_found", "Node not found.")
   }
   graph$nodes[[node_id]] <- NULL
   graph$version <- graph$version + 1L
   graph
 }
 
-#' Add an edge to a groots graph
+#' Add an edge to a dagriculture graph
 #'
-#' @param graph A \code{groots_graph}.
+#' @param graph A \code{dagriculture_graph}.
 #' @param from Upstream node ID.
 #' @param to Downstream node ID.
 #' @param type Edge type.
 #' @param id Optional Edge ID.
 #' @param metadata Edge metadata.
 #' @export
-groots_add_edge <- function(graph, from, to, type = "data", id = NULL, metadata = list()) {
+dagriculture_add_edge <- function(graph, from, to, type = "data", id = NULL, metadata = list()) {
   if (is.null(id)) {
     id <- paste0("edge_", from, "_", to)
   }
   if (!from %in% names(graph$nodes) || !to %in% names(graph$nodes)) {
-    abort_groots("groots_error_not_found", "Missing node.")
+    abort_dagriculture("dagriculture_error_not_found", "Missing node.")
   }
 
-  if (groots_has_path(graph, to, from)) {
-    abort_groots("groots_error_cycle", "Cycle detected.")
+  if (dagriculture_has_path(graph, to, from)) {
+    abort_dagriculture("dagriculture_error_cycle", "Cycle detected.")
   }
 
   edge <- list(
@@ -107,33 +107,33 @@ groots_add_edge <- function(graph, from, to, type = "data", id = NULL, metadata 
   graph
 }
 
-#' Remove an edge from a groots graph
+#' Remove an edge from a dagriculture graph
 #'
-#' @param graph A \code{groots_graph}.
+#' @param graph A \code{dagriculture_graph}.
 #' @param edge_id Edge ID.
 #' @export
-groots_remove_edge <- function(graph, edge_id) {
+dagriculture_remove_edge <- function(graph, edge_id) {
   if (!edge_id %in% names(graph$edges)) {
-    abort_groots("groots_error_not_found", "Missing edge.")
+    abort_dagriculture("dagriculture_error_not_found", "Missing edge.")
   }
   graph$edges[[edge_id]] <- NULL
   graph$version <- graph$version + 1L
   graph
 }
 
-#' Add a gate to a groots graph
+#' Add a gate to a dagriculture graph
 #'
-#' @param graph A \code{groots_graph}.
+#' @param graph A \code{dagriculture_graph}.
 #' @param edge_id Edge ID.
 #' @param id Optional Gate ID.
 #' @param metadata Gate metadata.
 #' @export
-groots_add_gate <- function(graph, edge_id, id = NULL, metadata = list()) {
+dagriculture_add_gate <- function(graph, edge_id, id = NULL, metadata = list()) {
   if (is.null(id)) {
     id <- paste0("gate_", edge_id)
   }
   if (!edge_id %in% names(graph$edges)) {
-    abort_groots("groots_error_not_found", "Missing edge.")
+    abort_dagriculture("dagriculture_error_not_found", "Missing edge.")
   }
 
   gate <- list(
@@ -148,42 +148,42 @@ groots_add_gate <- function(graph, edge_id, id = NULL, metadata = list()) {
   graph
 }
 
-#' Resolve a gate in a groots graph
+#' Resolve a gate in a dagriculture graph
 #'
-#' @param graph A \code{groots_graph}.
+#' @param graph A \code{dagriculture_graph}.
 #' @param id Gate ID.
 #' @export
-groots_resolve_gate <- function(graph, id) {
+dagriculture_resolve_gate <- function(graph, id) {
   if (!id %in% names(graph$gates)) {
-    abort_groots("groots_error_not_found", "Missing gate.")
+    abort_dagriculture("dagriculture_error_not_found", "Missing gate.")
   }
   graph$gates[[id]]$status <- "resolved"
   graph$version <- graph$version + 1L
   graph
 }
 
-#' Reopen a gate in a groots graph
+#' Reopen a gate in a dagriculture graph
 #'
-#' @param graph A \code{groots_graph}.
+#' @param graph A \code{dagriculture_graph}.
 #' @param id Gate ID.
 #' @export
-groots_reopen_gate <- function(graph, id) {
+dagriculture_reopen_gate <- function(graph, id) {
   if (!id %in% names(graph$gates)) {
-    abort_groots("groots_error_not_found", "Missing gate.")
+    abort_dagriculture("dagriculture_error_not_found", "Missing gate.")
   }
   graph$gates[[id]]$status <- "pending"
   graph$version <- graph$version + 1L
   graph
 }
 
-#' Remove a gate from a groots graph
+#' Remove a gate from a dagriculture graph
 #'
-#' @param graph A \code{groots_graph}.
+#' @param graph A \code{dagriculture_graph}.
 #' @param id Gate ID.
 #' @export
-groots_remove_gate <- function(graph, id) {
+dagriculture_remove_gate <- function(graph, id) {
   if (!id %in% names(graph$gates)) {
-    abort_groots("groots_error_not_found", "Missing gate.")
+    abort_dagriculture("dagriculture_error_not_found", "Missing gate.")
   }
   graph$gates[[id]] <- NULL
   graph$version <- graph$version + 1L

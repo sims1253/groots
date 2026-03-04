@@ -1,13 +1,13 @@
-Package: groots
-Title: Tools for groots
+Package: dagriculture
+Title: Tools for dagriculture
 Version: 0.1.0
 Authors@R: 
     person("Maximilian Scholz", , , "dev.scholz@mailbox.org", role = c("aut", "cre"))
-Description: Helpers and workflows for groots. Replace this placeholder
+Description: Helpers and workflows for dagriculture. Replace this placeholder
     with a package-specific description before publishing.
 License: MIT + file LICENSE
-URL: https://github.com/sims1253/groots, https://sims1253.github.io/groots/
-BugReports: https://github.com/sims1253/groots/issues
+URL: https://github.com/sims1253/dagriculture, https://sims1253.github.io/dagriculture/
+BugReports: https://github.com/sims1253/dagriculture/issues
 Depends: 
     R (>= 4.3.0)
 Suggests: 
