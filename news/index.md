@@ -1,14 +1,14 @@
 # Changelog
 
-## groots 0.1.0
+## dagriculture 0.1.0
 
 ### Features
 
 - **Constructors**: Functions to create and define kinds, registries,
   and the core graph structure
-  ([`groots_kind()`](https://sims1253.github.io/groots/reference/groots_kind.md),
-  [`groots_registry()`](https://sims1253.github.io/groots/reference/groots_registry.md),
-  [`groots_graph()`](https://sims1253.github.io/groots/reference/groots_graph.md)).
+  ([`dagri_kind()`](https://sims1253.github.io/dagriculture/reference/dagri_kind.md),
+  [`dagri_registry()`](https://sims1253.github.io/dagriculture/reference/dagri_registry.md),
+  [`dagri_graph()`](https://sims1253.github.io/dagriculture/reference/dagri_graph.md)).
 - **Graph Editing**: Implemented structural modifiers to
   add/remove/update nodes, edges, and explicit blockers called gates.
 - **Topology Queries**: Topological sorting and traversal utilities
@@ -17,17 +17,17 @@
 - **Structural Planning**: Determine node eligibility and blocked
   reasons through declarative resolution without side-effects or
   executing runtime jobs
-  ([`groots_recompute_state()`](https://sims1253.github.io/groots/reference/groots_recompute_state.md),
-  [`groots_plan()`](https://sims1253.github.io/groots/reference/groots_plan.md)).
+  ([`dagri_recompute_state()`](https://sims1253.github.io/dagriculture/reference/dagri_recompute_state.md),
+  [`dagri_plan()`](https://sims1253.github.io/dagriculture/reference/dagri_plan.md)).
 
 ### Internal
 
 - All structures fully align with the plain-data spec and are serialized
   purely as nested named lists (JSON compatible).
 - Defined explicit typed errors in
-  [`abort_groots()`](https://sims1253.github.io/groots/reference/abort_groots.md).
+  [`abort_dagri()`](https://sims1253.github.io/dagriculture/reference/abort_dagri.md).
 - Removed `hello()` template code.
 
-## groots 0.0.0.9000
+## dagriculture 0.0.0.9000
 
 - Initial development version.

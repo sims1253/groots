@@ -7,15 +7,15 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/sims1253/groots/blob/master/inst/CITATION)
+[`inst/CITATION`](https://github.com/sims1253/dagriculture/blob/master/inst/CITATION)
 
-Scholz M (2026). *groots*. R package version 0.0.0.9000,
-<https://github.com/sims1253/groots>.
+Scholz M (2026). *dagriculture*. R package version 0.0.0.9000,
+<https://github.com/sims1253/dagriculture>.
 
     @Manual{,
-      title = {groots},
+      title = {dagriculture},
       author = {Maximilian Scholz},
       year = {2026},
       note = {R package version 0.0.0.9000},
-      url = {https://github.com/sims1253/groots},
+      url = {https://github.com/sims1253/dagriculture},
     }
