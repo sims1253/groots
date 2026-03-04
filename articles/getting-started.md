@@ -23,7 +23,6 @@ manage side effects; rather, it tracks structural states (`new`,
 ## Installation
 
 ``` r
-# install.packages("pak")
 pak::pak("sims1253/groots")
 ```
 
