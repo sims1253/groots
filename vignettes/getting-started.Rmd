@@ -39,10 +39,10 @@ First, establish a registry to strictly define what kind of nodes are allowed in
 ```{r}
 library(dagriculture)
 
-reg <- dagriculture_registry(
-  dagriculture_kind("input", output_type = "data.frame"),
-  dagriculture_kind("model"),
-  dagriculture_kind("report")
+reg <- dagri_registry(
+  dagri_kind("input", output_type = "data.frame"),
+  dagri_kind("model"),
+  dagri_kind("report")
 )
 ```
 
@@ -51,14 +51,14 @@ reg <- dagriculture_registry(
 Start with an empty graph, and add nodes and edges. Because `dagriculture` uses value semantics, every mutating function returns a new updated graph instance.
 
 ```{r}
-g <- dagriculture_graph(reg)
+g <- dagri_graph(reg)
 
 g <- g |>
-  dagriculture_add_node(id = "data", kind = "input", label = "Raw Data") |>
-  dagriculture_add_node(id = "fit", kind = "model", label = "Statistical Fit") |>
-  dagriculture_add_node(id = "plot", kind = "report", label = "Final Plot") |>
-  dagriculture_add_edge(from = "data", to = "fit", id = "e_data_fit") |>
-  dagriculture_add_edge(from = "fit", to = "plot", id = "e_fit_plot")
+  dagri_add_node(id = "data", kind = "input", label = "Raw Data") |>
+  dagri_add_node(id = "fit", kind = "model", label = "Statistical Fit") |>
+  dagri_add_node(id = "plot", kind = "report", label = "Final Plot") |>
+  dagri_add_edge(from = "data", to = "fit", id = "e_data_fit") |>
+  dagri_add_edge(from = "fit", to = "plot", id = "e_fit_plot")
 
 # The internal version tracks changes
 g$version
@@ -69,27 +69,27 @@ g$version
 You can place a "gate" on an edge to represent a manual or external block—for instance, requiring human approval before the statistical fit proceeds.
 
 ```{r}
-g <- dagriculture_add_gate(g, edge_id = "e_data_fit", id = "approval_gate")
+g <- dagri_add_gate(g, edge_id = "e_data_fit", id = "approval_gate")
 ```
 
 ### 4. Compute State and Plan
 
-Use `dagriculture_recompute_state()` to evaluate the graph topologically and determine which nodes are structurally ready and which are blocked.
+Use `dagri_recompute_state()` to evaluate the graph topologically and determine which nodes are structurally ready and which are blocked.
 
 ```{r}
-g_state <- dagriculture_recompute_state(g)
+g_state <- dagri_recompute_state(g)
 
 # The 'data' node is a root and has no blockers
-dagriculture_eligible(g_state)
+dagri_eligible(g_state)
 
 # The 'fit' node is blocked by the gate; the 'plot' node is blocked because 'fit' is blocked.
-dagriculture_blocked(g_state)
+dagri_blocked(g_state)
 ```
 
 We can generate a structural plan to see how dependencies shake out:
 
 ```{r}
-plan <- dagriculture_plan(g_state)
+plan <- dagri_plan(g_state)
 plan$targets
 plan$blocked
 plan$pending_gates
@@ -100,12 +100,12 @@ plan$pending_gates
 Once the external condition is met, you can resolve the gate. Computing the state again reveals that the downstream dependencies are now unblocked.
 
 ```{r}
-g_unblocked <- dagriculture_resolve_gate(g_state, id = "approval_gate") |>
-  dagriculture_recompute_state()
+g_unblocked <- dagri_resolve_gate(g_state, id = "approval_gate") |>
+  dagri_recompute_state()
 
 # Everything is unblocked and ready for execution
-dagriculture_eligible(g_unblocked)
-dagriculture_blocked(g_unblocked)
+dagri_eligible(g_unblocked)
+dagri_blocked(g_unblocked)
 ```
 
 ## Querying Topology
@@ -113,8 +113,8 @@ dagriculture_blocked(g_unblocked)
 `dagriculture` includes standard helpers for topological traversal and queries.
 
 ```{r}
-dagriculture_upstream(g_unblocked, "plot")
-dagriculture_descendants(g_unblocked, "data")
-dagriculture_leaves(g_unblocked)
-dagriculture_topo_order(g_unblocked)
+dagri_upstream(g_unblocked, "plot")
+dagri_descendants(g_unblocked, "data")
+dagri_leaves(g_unblocked)
+dagri_topo_order(g_unblocked)
 ```

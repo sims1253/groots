@@ -271,7 +271,7 @@ Recovery rule:
 
 Schema:
 
-- `schema_name = "dagriculture_graph_snapshot"`
+- `schema_name = "dagri_graph_snapshot"`
 - `schema_version = 1`
 
 Required fields:
@@ -534,7 +534,7 @@ Required fields:
 
 ```json
 {
-  "schema_name": "dagriculture_graph_snapshot",
+  "schema_name": "dagri_graph_snapshot",
   "schema_version": 1,
   "graph_id": "graph_01JNB5R8KQ3MF2B57CBK6K4Y2J",
   "version": 7,

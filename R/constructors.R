@@ -5,7 +5,7 @@
 #' @param output_type Output type string.
 #' @param param_schema Parameter schema.
 #' @export
-dagriculture_kind <- function(name, input_contract = NULL, output_type = NULL, param_schema = NULL) {
+dagri_kind <- function(name, input_contract = NULL, output_type = NULL, param_schema = NULL) {
   if (!is.null(param_schema)) {
     has_closure <- function(x) {
       if (is.function(x)) {
@@ -17,8 +17,8 @@ dagriculture_kind <- function(name, input_contract = NULL, output_type = NULL, p
       FALSE
     }
     if (has_closure(param_schema)) {
-      abort_dagriculture(
-        "dagriculture_error_invalid_argument",
+      abort_dagri(
+        "dagri_error_invalid_argument",
         "Executable closures are not allowed in param_schema."
       )
     }
@@ -35,9 +35,9 @@ dagriculture_kind <- function(name, input_contract = NULL, output_type = NULL, p
 
 #' Define a dagriculture registry
 #'
-#' @param ... \code{dagriculture_kind} objects.
+#' @param ... \code{dagri_kind} objects.
 #' @export
-dagriculture_registry <- function(...) {
+dagri_registry <- function(...) {
   kinds_list <- list(...)
   kinds_env <- list()
   for (k in kinds_list) {
@@ -51,9 +51,9 @@ dagriculture_registry <- function(...) {
 
 #' Create an empty dagriculture graph
 #'
-#' @param registry A \code{dagriculture_registry} object.
+#' @param registry A \code{dagri_registry} object.
 #' @export
-dagriculture_graph <- function(registry) {
+dagri_graph <- function(registry) {
   list(
     registry = registry,
     nodes = stats::setNames(list(), character(0)),

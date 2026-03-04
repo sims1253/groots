@@ -1,64 +1,64 @@
 describe("graph state and planning", {
-  reg <- dagriculture_registry(dagriculture_kind("source"), dagriculture_kind("process"))
+  reg <- dagri_registry(dagri_kind("source"), dagri_kind("process"))
 
   # A linear chain: n1 -> n2 -> n3
   # n2 has a pending gate
-  g <- dagriculture_graph(reg) |>
-    dagriculture_add_node("n1", "source") |>
-    dagriculture_add_node("n2", "process") |>
-    dagriculture_add_node("n3", "process") |>
-    dagriculture_add_edge("n1", "n2", id = "e1") |>
-    dagriculture_add_edge("n2", "n3", id = "e2") |>
-    dagriculture_add_gate("e1", id = "gate1")
+  g <- dagri_graph(reg) |>
+    dagri_add_node("n1", "source") |>
+    dagri_add_node("n2", "process") |>
+    dagri_add_node("n3", "process") |>
+    dagri_add_edge("n1", "n2", id = "e1") |>
+    dagri_add_edge("n2", "n3", id = "e2") |>
+    dagri_add_gate("e1", id = "gate1")
 
-  describe("dagriculture_recompute_state()", {
+  describe("dagri_recompute_state()", {
     it("returns a new graph with updated structural state", {
-      g_state <- dagriculture_recompute_state(g)
+      g_state <- dagri_recompute_state(g)
 
       # n1 is a root, ready
-      expect_identical(dagriculture_node(g_state, "n1")$state, "ready")
+      expect_identical(dagri_node(g_state, "n1")$state, "ready")
 
       # n2 is blocked by gate on inbound edge e1
-      expect_identical(dagriculture_node(g_state, "n2")$state, "blocked")
-      expect_identical(dagriculture_node(g_state, "n2")$block_reason, "gate")
+      expect_identical(dagri_node(g_state, "n2")$state, "blocked")
+      expect_identical(dagri_node(g_state, "n2")$block_reason, "gate")
 
       # n3 is blocked upstream (because n2 is blocked)
-      expect_identical(dagriculture_node(g_state, "n3")$state, "blocked")
-      expect_identical(dagriculture_node(g_state, "n3")$block_reason, "upstream_blocked")
+      expect_identical(dagri_node(g_state, "n3")$state, "blocked")
+      expect_identical(dagri_node(g_state, "n3")$block_reason, "upstream_blocked")
     })
 
     it("identifies invalid configurations", {
-      # Missing required inputs based on dagriculture_kind$input_contract could lead to missing_edge
+      # Missing required inputs based on dagri_kind$input_contract could lead to missing_edge
       # But since we have a simple registry without contracts here, let's just test
       # structural readiness flows properly.
-      g_resolved <- dagriculture_resolve_gate(g, "gate1") |> dagriculture_recompute_state()
+      g_resolved <- dagri_resolve_gate(g, "gate1") |> dagri_recompute_state()
 
-      expect_identical(dagriculture_node(g_resolved, "n2")$state, "ready")
-      expect_identical(dagriculture_node(g_resolved, "n3")$state, "ready")
+      expect_identical(dagri_node(g_resolved, "n2")$state, "ready")
+      expect_identical(dagri_node(g_resolved, "n3")$state, "ready")
     })
   })
 
   describe("structural accessors", {
-    it("dagriculture_eligible() identifies ready nodes", {
-      g_state <- dagriculture_recompute_state(g)
-      expect_setequal(dagriculture_eligible(g_state), "n1")
+    it("dagri_eligible() identifies ready nodes", {
+      g_state <- dagri_recompute_state(g)
+      expect_setequal(dagri_eligible(g_state), "n1")
     })
 
-    it("dagriculture_blocked() identifies blocked nodes", {
-      g_state <- dagriculture_recompute_state(g)
-      expect_setequal(names(dagriculture_blocked(g_state)), c("n2", "n3"))
+    it("dagri_blocked() identifies blocked nodes", {
+      g_state <- dagri_recompute_state(g)
+      expect_setequal(names(dagri_blocked(g_state)), c("n2", "n3"))
     })
 
-    it("dagriculture_terminal() identifies terminal targets", {
-      g_state <- dagriculture_recompute_state(g)
-      expect_setequal(dagriculture_terminal(g_state), "n3")
+    it("dagri_terminal() identifies terminal targets", {
+      g_state <- dagri_recompute_state(g)
+      expect_setequal(dagri_terminal(g_state), "n3")
     })
   })
 
-  describe("dagriculture_plan()", {
-    it("returns a compliant dagriculture_plan structure", {
-      g_state <- dagriculture_recompute_state(g)
-      plan <- dagriculture_plan(g_state, targets = "n3")
+  describe("dagri_plan()", {
+    it("returns a compliant dagri_plan structure", {
+      g_state <- dagri_recompute_state(g)
+      plan <- dagri_plan(g_state, targets = "n3")
 
       expect_type(plan, "list")
       expect_identical(
@@ -78,8 +78,8 @@ describe("graph state and planning", {
     })
 
     it("resolves gate when updated and re-plans", {
-      g_resolved <- dagriculture_resolve_gate(g, "gate1") |> dagriculture_recompute_state()
-      plan <- dagriculture_plan(g_resolved, targets = "n3")
+      g_resolved <- dagri_resolve_gate(g, "gate1") |> dagri_recompute_state()
+      plan <- dagri_plan(g_resolved, targets = "n3")
 
       expect_identical(plan$blocked, setNames(list(), character(0)))
       expect_identical(plan$pending_gates, character(0))
@@ -87,8 +87,8 @@ describe("graph state and planning", {
     })
 
     it("supports planning with a subset of targets", {
-      g_state <- dagriculture_recompute_state(g)
-      plan <- dagriculture_plan(g_state, targets = "n1")
+      g_state <- dagri_recompute_state(g)
+      plan <- dagri_plan(g_state, targets = "n1")
 
       expect_setequal(plan$targets, "n1")
       expect_setequal(plan$terminal, "n1")

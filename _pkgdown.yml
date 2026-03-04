@@ -5,49 +5,49 @@ reference:
 - title: Constructors
   desc: Functions to create and initialize graphs and registries.
   contents:
-  - dagriculture_kind
-  - dagriculture_registry
-  - dagriculture_graph
+  - dagri_kind
+  - dagri_registry
+  - dagri_graph
 - title: Graph Editing
   desc: Functions to structurally modify nodes, edges, and gates.
   contents:
-  - dagriculture_add_node
-  - dagriculture_update_node
-  - dagriculture_remove_node
-  - dagriculture_add_edge
-  - dagriculture_remove_edge
-  - dagriculture_add_gate
-  - dagriculture_resolve_gate
-  - dagriculture_reopen_gate
-  - dagriculture_remove_gate
+  - dagri_add_node
+  - dagri_update_node
+  - dagri_remove_node
+  - dagri_add_edge
+  - dagri_remove_edge
+  - dagri_add_gate
+  - dagri_resolve_gate
+  - dagri_reopen_gate
+  - dagri_remove_gate
 - title: Queries and Topology
   desc: Accessors and topological traversal functions.
   contents:
-  - dagriculture_node
-  - dagriculture_edge
-  - dagriculture_gate
-  - dagriculture_nodes
-  - dagriculture_edges
-  - dagriculture_gates
-  - dagriculture_upstream
-  - dagriculture_downstream
-  - dagriculture_ancestors
-  - dagriculture_descendants
-  - dagriculture_has_path
-  - dagriculture_roots
-  - dagriculture_leaves
-  - dagriculture_topo_order
+  - dagri_node
+  - dagri_edge
+  - dagri_gate
+  - dagri_nodes
+  - dagri_edges
+  - dagri_gates
+  - dagri_upstream
+  - dagri_downstream
+  - dagri_ancestors
+  - dagri_descendants
+  - dagri_has_path
+  - dagri_roots
+  - dagri_leaves
+  - dagri_topo_order
 - title: State and Planning
   desc: Functions to resolve structural conditions and produce graph execution plans.
   contents:
-  - dagriculture_recompute_state
-  - dagriculture_eligible
-  - dagriculture_blocked
-  - dagriculture_terminal
-  - dagriculture_plan
+  - dagri_recompute_state
+  - dagri_eligible
+  - dagri_blocked
+  - dagri_terminal
+  - dagri_plan
 - title: Internals
   desc: Package internal utilities.
-  contents: abort_dagriculture
+  contents: abort_dagri
 articles:
 - title: Getting Started
   contents: getting-started

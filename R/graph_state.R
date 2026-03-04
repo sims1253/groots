@@ -1,9 +1,9 @@
 #' Recompute graph state
 #'
-#' @param graph A \code{dagriculture_graph}.
+#' @param graph A \code{dagri_graph}.
 #' @export
-dagriculture_recompute_state <- function(graph) {
-  topo <- dagriculture_topo_order(graph)
+dagri_recompute_state <- function(graph) {
+  topo <- dagri_topo_order(graph)
 
   for (n_id in topo) {
     up_edges <- Filter(function(e) e$to == n_id, graph$edges)
@@ -47,9 +47,9 @@ dagriculture_recompute_state <- function(graph) {
 
 #' Get eligible nodes
 #'
-#' @param graph A \code{dagriculture_graph}.
+#' @param graph A \code{dagri_graph}.
 #' @export
-dagriculture_eligible <- function(graph) {
+dagri_eligible <- function(graph) {
   if (length(graph$nodes) == 0) {
     return(character(0))
   }
@@ -58,9 +58,9 @@ dagriculture_eligible <- function(graph) {
 
 #' Get blocked nodes
 #'
-#' @param graph A \code{dagriculture_graph}.
+#' @param graph A \code{dagri_graph}.
 #' @export
-dagriculture_blocked <- function(graph) {
+dagri_blocked <- function(graph) {
   blocked_nodes <- Filter(function(n) n$state == "blocked", graph$nodes)
   res <- lapply(blocked_nodes, function(n) n$block_reason)
   if (length(res) == 0) {
@@ -71,34 +71,34 @@ dagriculture_blocked <- function(graph) {
 
 #' Get terminal nodes
 #'
-#' @param graph A \code{dagriculture_graph}.
+#' @param graph A \code{dagri_graph}.
 #' @export
-dagriculture_terminal <- function(graph) {
-  dagriculture_leaves(graph)
+dagri_terminal <- function(graph) {
+  dagri_leaves(graph)
 }
 
 #' Create an execution plan
 #'
-#' @param graph A \code{dagriculture_graph}.
+#' @param graph A \code{dagri_graph}.
 #' @param targets Optional target nodes.
 #' @export
-dagriculture_plan <- function(graph, targets = NULL) {
+dagri_plan <- function(graph, targets = NULL) {
   if (is.null(targets)) {
     targets <- names(graph$nodes)
   } else {
     all_targets <- character(0)
     for (t in targets) {
-      all_targets <- unique(c(all_targets, t, dagriculture_ancestors(graph, t)))
+      all_targets <- unique(c(all_targets, t, dagri_ancestors(graph, t)))
     }
     targets <- all_targets
   }
 
-  topo <- dagriculture_topo_order(graph, subset = targets)
+  topo <- dagri_topo_order(graph, subset = targets)
 
-  eligible_nodes <- intersect(targets, dagriculture_eligible(graph))
+  eligible_nodes <- intersect(targets, dagri_eligible(graph))
 
   blocked_list <- list()
-  all_blocked <- dagriculture_blocked(graph)
+  all_blocked <- dagri_blocked(graph)
   for (t in targets) {
     if (t %in% names(all_blocked)) {
       blocked_list[[t]] <- all_blocked[[t]]
@@ -110,7 +110,7 @@ dagriculture_plan <- function(graph, targets = NULL) {
 
   target_leaves <- character(0)
   for (t in targets) {
-    down <- dagriculture_downstream(graph, t)
+    down <- dagri_downstream(graph, t)
     if (length(intersect(down, targets)) == 0) {
       target_leaves <- c(target_leaves, t)
     }

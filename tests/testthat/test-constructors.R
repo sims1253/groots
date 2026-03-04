@@ -1,6 +1,6 @@
-describe("dagriculture_kind()", {
+describe("dagri_kind()", {
   it("creates a valid kind record with correct shape", {
-    kind <- dagriculture_kind(
+    kind <- dagri_kind(
       name = "data_source",
       output_type = "data.frame",
       param_schema = list(required = c("path"))
@@ -17,17 +17,17 @@ describe("dagriculture_kind()", {
 
   it("rejects executable closures in param_schema", {
     expect_error(
-      dagriculture_kind("bad", param_schema = list(fn = function() 1)),
-      class = "dagriculture_error_invalid_argument"
+      dagri_kind("bad", param_schema = list(fn = function() 1)),
+      class = "dagri_error_invalid_argument"
     )
   })
 })
 
-describe("dagriculture_registry()", {
+describe("dagri_registry()", {
   it("creates a registry from kinds", {
-    kind1 <- dagriculture_kind("source")
-    kind2 <- dagriculture_kind("fit")
-    reg <- dagriculture_registry(kind1, kind2)
+    kind1 <- dagri_kind("source")
+    kind2 <- dagri_kind("fit")
+    reg <- dagri_registry(kind1, kind2)
 
     expect_type(reg, "list")
     expect_identical(names(reg), c("kinds", "metadata"))
@@ -35,10 +35,10 @@ describe("dagriculture_registry()", {
   })
 })
 
-describe("dagriculture_graph()", {
+describe("dagri_graph()", {
   it("creates an empty graph with version 0 and required fields", {
-    reg <- dagriculture_registry(dagriculture_kind("test"))
-    graph <- dagriculture_graph(reg)
+    reg <- dagri_registry(dagri_kind("test"))
+    graph <- dagri_graph(reg)
 
     expect_type(graph, "list")
     expect_identical(graph$version, 0L)

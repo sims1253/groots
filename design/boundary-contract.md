@@ -126,7 +126,7 @@ semantics into the graph library.
 `bg_answer_gate()` is the bridge operation:
 
 - it validates and records the semantic answer in `bayesguide`
-- it must also invoke `dagriculture_resolve_gate()` internally so the structural
+- it must also invoke `dagri_resolve_gate()` internally so the structural
   blocker is cleared in the graph before persistence completes
 
 ## Data-Flow Contract

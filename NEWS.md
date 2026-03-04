@@ -2,15 +2,15 @@
 
 ## Features
 
-- **Constructors**: Functions to create and define kinds, registries, and the core graph structure (`dagriculture_kind()`, `dagriculture_registry()`, `dagriculture_graph()`).
+- **Constructors**: Functions to create and define kinds, registries, and the core graph structure (`dagri_kind()`, `dagri_registry()`, `dagri_graph()`).
 - **Graph Editing**: Implemented structural modifiers to add/remove/update nodes, edges, and explicit blockers called gates.
 - **Topology Queries**: Topological sorting and traversal utilities (ancestors, descendants, upstream, downstream, roots, leaves, reachability).
-- **Structural Planning**: Determine node eligibility and blocked reasons through declarative resolution without side-effects or executing runtime jobs (`dagriculture_recompute_state()`, `dagriculture_plan()`).
+- **Structural Planning**: Determine node eligibility and blocked reasons through declarative resolution without side-effects or executing runtime jobs (`dagri_recompute_state()`, `dagri_plan()`).
 
 ## Internal
 
 - All structures fully align with the plain-data spec and are serialized purely as nested named lists (JSON compatible).
-- Defined explicit typed errors in `abort_dagriculture()`.
+- Defined explicit typed errors in `abort_dagri()`.
 - Removed `hello()` template code.
 
 # dagriculture 0.0.0.9000

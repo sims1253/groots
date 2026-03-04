@@ -1,18 +1,18 @@
 #' Add a node to a dagriculture graph
 #'
-#' @param graph A \code{dagriculture_graph}.
+#' @param graph A \code{dagri_graph}.
 #' @param id Node ID.
 #' @param kind Node kind.
 #' @param label Node label.
 #' @param params Node parameters.
 #' @param metadata Node metadata.
 #' @export
-dagriculture_add_node <- function(graph, id, kind, label = NULL, params = list(), metadata = list()) {
+dagri_add_node <- function(graph, id, kind, label = NULL, params = list(), metadata = list()) {
   if (!kind %in% names(graph$registry$kinds)) {
-    abort_dagriculture("dagriculture_error_unknown_kind", "Unknown node kind.")
+    abort_dagri("dagri_error_unknown_kind", "Unknown node kind.")
   }
   if (id %in% names(graph$nodes)) {
-    abort_dagriculture("dagriculture_error_duplicate_id", "Duplicate node id.")
+    abort_dagri("dagri_error_duplicate_id", "Duplicate node id.")
   }
 
   node <- list(
@@ -32,15 +32,15 @@ dagriculture_add_node <- function(graph, id, kind, label = NULL, params = list()
 
 #' Update a node in a dagriculture graph
 #'
-#' @param graph A \code{dagriculture_graph}.
+#' @param graph A \code{dagri_graph}.
 #' @param node_id Node ID.
 #' @param label Node label.
 #' @param params Node parameters.
 #' @param metadata Node metadata.
 #' @export
-dagriculture_update_node <- function(graph, node_id, label = NULL, params = NULL, metadata = NULL) {
+dagri_update_node <- function(graph, node_id, label = NULL, params = NULL, metadata = NULL) {
   if (!node_id %in% names(graph$nodes)) {
-    abort_dagriculture("dagriculture_error_not_found", "Node not found.")
+    abort_dagri("dagri_error_not_found", "Node not found.")
   }
 
   node <- graph$nodes[[node_id]]
@@ -61,12 +61,12 @@ dagriculture_update_node <- function(graph, node_id, label = NULL, params = NULL
 
 #' Remove a node from a dagriculture graph
 #'
-#' @param graph A \code{dagriculture_graph}.
+#' @param graph A \code{dagri_graph}.
 #' @param node_id Node ID.
 #' @export
-dagriculture_remove_node <- function(graph, node_id) {
+dagri_remove_node <- function(graph, node_id) {
   if (!node_id %in% names(graph$nodes)) {
-    abort_dagriculture("dagriculture_error_not_found", "Node not found.")
+    abort_dagri("dagri_error_not_found", "Node not found.")
   }
   graph$nodes[[node_id]] <- NULL
   graph$version <- graph$version + 1L
@@ -75,23 +75,23 @@ dagriculture_remove_node <- function(graph, node_id) {
 
 #' Add an edge to a dagriculture graph
 #'
-#' @param graph A \code{dagriculture_graph}.
+#' @param graph A \code{dagri_graph}.
 #' @param from Upstream node ID.
 #' @param to Downstream node ID.
 #' @param type Edge type.
 #' @param id Optional Edge ID.
 #' @param metadata Edge metadata.
 #' @export
-dagriculture_add_edge <- function(graph, from, to, type = "data", id = NULL, metadata = list()) {
+dagri_add_edge <- function(graph, from, to, type = "data", id = NULL, metadata = list()) {
   if (is.null(id)) {
     id <- paste0("edge_", from, "_", to)
   }
   if (!from %in% names(graph$nodes) || !to %in% names(graph$nodes)) {
-    abort_dagriculture("dagriculture_error_not_found", "Missing node.")
+    abort_dagri("dagri_error_not_found", "Missing node.")
   }
 
-  if (dagriculture_has_path(graph, to, from)) {
-    abort_dagriculture("dagriculture_error_cycle", "Cycle detected.")
+  if (dagri_has_path(graph, to, from)) {
+    abort_dagri("dagri_error_cycle", "Cycle detected.")
   }
 
   edge <- list(
@@ -109,12 +109,12 @@ dagriculture_add_edge <- function(graph, from, to, type = "data", id = NULL, met
 
 #' Remove an edge from a dagriculture graph
 #'
-#' @param graph A \code{dagriculture_graph}.
+#' @param graph A \code{dagri_graph}.
 #' @param edge_id Edge ID.
 #' @export
-dagriculture_remove_edge <- function(graph, edge_id) {
+dagri_remove_edge <- function(graph, edge_id) {
   if (!edge_id %in% names(graph$edges)) {
-    abort_dagriculture("dagriculture_error_not_found", "Missing edge.")
+    abort_dagri("dagri_error_not_found", "Missing edge.")
   }
   graph$edges[[edge_id]] <- NULL
   graph$version <- graph$version + 1L
@@ -123,17 +123,17 @@ dagriculture_remove_edge <- function(graph, edge_id) {
 
 #' Add a gate to a dagriculture graph
 #'
-#' @param graph A \code{dagriculture_graph}.
+#' @param graph A \code{dagri_graph}.
 #' @param edge_id Edge ID.
 #' @param id Optional Gate ID.
 #' @param metadata Gate metadata.
 #' @export
-dagriculture_add_gate <- function(graph, edge_id, id = NULL, metadata = list()) {
+dagri_add_gate <- function(graph, edge_id, id = NULL, metadata = list()) {
   if (is.null(id)) {
     id <- paste0("gate_", edge_id)
   }
   if (!edge_id %in% names(graph$edges)) {
-    abort_dagriculture("dagriculture_error_not_found", "Missing edge.")
+    abort_dagri("dagri_error_not_found", "Missing edge.")
   }
 
   gate <- list(
@@ -150,12 +150,12 @@ dagriculture_add_gate <- function(graph, edge_id, id = NULL, metadata = list()) 
 
 #' Resolve a gate in a dagriculture graph
 #'
-#' @param graph A \code{dagriculture_graph}.
+#' @param graph A \code{dagri_graph}.
 #' @param id Gate ID.
 #' @export
-dagriculture_resolve_gate <- function(graph, id) {
+dagri_resolve_gate <- function(graph, id) {
   if (!id %in% names(graph$gates)) {
-    abort_dagriculture("dagriculture_error_not_found", "Missing gate.")
+    abort_dagri("dagri_error_not_found", "Missing gate.")
   }
   graph$gates[[id]]$status <- "resolved"
   graph$version <- graph$version + 1L
@@ -164,12 +164,12 @@ dagriculture_resolve_gate <- function(graph, id) {
 
 #' Reopen a gate in a dagriculture graph
 #'
-#' @param graph A \code{dagriculture_graph}.
+#' @param graph A \code{dagri_graph}.
 #' @param id Gate ID.
 #' @export
-dagriculture_reopen_gate <- function(graph, id) {
+dagri_reopen_gate <- function(graph, id) {
   if (!id %in% names(graph$gates)) {
-    abort_dagriculture("dagriculture_error_not_found", "Missing gate.")
+    abort_dagri("dagri_error_not_found", "Missing gate.")
   }
   graph$gates[[id]]$status <- "pending"
   graph$version <- graph$version + 1L
@@ -178,12 +178,12 @@ dagriculture_reopen_gate <- function(graph, id) {
 
 #' Remove a gate from a dagriculture graph
 #'
-#' @param graph A \code{dagriculture_graph}.
+#' @param graph A \code{dagri_graph}.
 #' @param id Gate ID.
 #' @export
-dagriculture_remove_gate <- function(graph, id) {
+dagri_remove_gate <- function(graph, id) {
   if (!id %in% names(graph$gates)) {
-    abort_dagriculture("dagriculture_error_not_found", "Missing gate.")
+    abort_dagri("dagri_error_not_found", "Missing gate.")
   }
   graph$gates[[id]] <- NULL
   graph$version <- graph$version + 1L

@@ -16,7 +16,7 @@ Persistence and schema rules belong in
 
 - Public functions must have stable, explicit return types.
 - Query functions must not mutate persisted state.
-- `dagriculture_*` functions are value-in, value-out.
+- `dagri_*` functions are value-in, value-out.
 - `bg_*` functions may persist and mutate through an explicit handle.
 - Contract violations should raise typed errors rather than silently coercing
   ambiguous input.
@@ -60,14 +60,14 @@ Rules:
 
 ### `dagriculture`
 
-#### `dagriculture_graph`
+#### `dagri_graph`
 
 Fields:
 
-- `registry`: `dagriculture_registry`
-- `nodes`: named map of `dagriculture_node`
-- `edges`: named map of `dagriculture_edge`
-- `gates`: named map of `dagriculture_gate`
+- `registry`: `dagri_registry`
+- `nodes`: named map of `dagri_node`
+- `edges`: named map of `dagri_edge`
+- `gates`: named map of `dagri_gate`
 - `version`: scalar integer
 - `metadata`: named list
 
@@ -77,18 +77,18 @@ Invariants:
 - every node kind exists in `registry`
 - every gate targets an existing edge
 - `version` increases by exactly `1` in the returned graph for each successful
-  `dagriculture_*` mutator call
+  `dagri_*` mutator call
 - divergent copies may legitimately reach the same numeric version; only
   `bayesguide` may use persisted compare-and-swap checks to detect conflicts
 
-#### `dagriculture_registry`
+#### `dagri_registry`
 
 Fields:
 
-- `kinds`: named map of `dagriculture_kind`
+- `kinds`: named map of `dagri_kind`
 - `metadata`: named list
 
-#### `dagriculture_kind`
+#### `dagri_kind`
 
 Fields:
 
@@ -103,7 +103,7 @@ Rules:
 - `param_schema` must be declarative plain data
 - no executable closures in the public contract
 
-#### `dagriculture_node`
+#### `dagri_node`
 
 Fields:
 
@@ -121,7 +121,7 @@ Rules:
   or source files
 - `upstream_blocked` means an upstream node is structurally blocked or invalid
 
-#### `dagriculture_edge`
+#### `dagri_edge`
 
 Fields:
 
@@ -131,7 +131,7 @@ Fields:
 - `type`: scalar string
 - `metadata`: named list
 
-#### `dagriculture_gate`
+#### `dagri_gate`
 
 Fields:
 
@@ -140,7 +140,7 @@ Fields:
 - `status`: `pending` or `resolved`
 - `metadata`: named list
 
-#### `dagriculture_plan`
+#### `dagri_plan`
 
 Fields:
 
@@ -195,7 +195,7 @@ Fields:
 - `project_id`: scalar string
 - `name`: scalar string
 - `path`: scalar string
-- `graph`: `dagriculture_graph`
+- `graph`: `dagri_graph`
 - `registry_bindings`: named map of `bg_registry_binding`
 - `decisions`: named map of `bg_decision_record`
 - `gate_specs`: named map of `bg_pending_gate`
@@ -290,7 +290,7 @@ Fields:
 
 Fields:
 
-- `graph_plan`: `dagriculture_plan`
+- `graph_plan`: `dagri_plan`
 - `targets`: character vector
 - `eligible`: character vector
 - `blocked`: named list mapping node id to reason
@@ -303,7 +303,7 @@ Fields:
 
 Rules:
 
-- `eligible` is the structurally eligible set from `dagriculture_plan`
+- `eligible` is the structurally eligible set from `dagri_plan`
 - `cache_hits` and `missing_results` are `bayesguide` overlays on top of that
   structural set
 - `cache_hits` are determined by computing predicted intent-based fingerprints
@@ -363,68 +363,68 @@ Rules:
 ### Constructors
 
 ```r
-dagriculture_kind(name, input_contract = NULL, output_type = NULL, param_schema = NULL)
-dagriculture_registry(...)
-dagriculture_graph(registry)
+dagri_kind(name, input_contract = NULL, output_type = NULL, param_schema = NULL)
+dagri_registry(...)
+dagri_graph(registry)
 ```
 
 ### Graph Editing
 
 ```r
-dagriculture_add_node(graph, id, kind, label = NULL, params = list(), metadata = list())
-dagriculture_update_node(graph, node_id, label = NULL, params = NULL, metadata = NULL)
-dagriculture_remove_node(graph, node_id)
+dagri_add_node(graph, id, kind, label = NULL, params = list(), metadata = list())
+dagri_update_node(graph, node_id, label = NULL, params = NULL, metadata = NULL)
+dagri_remove_node(graph, node_id)
 
-dagriculture_add_edge(graph, from, to, type = "data", id = NULL, metadata = list())
-dagriculture_remove_edge(graph, edge_id)
+dagri_add_edge(graph, from, to, type = "data", id = NULL, metadata = list())
+dagri_remove_edge(graph, edge_id)
 
-dagriculture_add_gate(graph, edge_id, id = NULL, metadata = list())
-dagriculture_resolve_gate(graph, id)
-dagriculture_reopen_gate(graph, id)
-dagriculture_remove_gate(graph, id)
+dagri_add_gate(graph, edge_id, id = NULL, metadata = list())
+dagri_resolve_gate(graph, id)
+dagri_reopen_gate(graph, id)
+dagri_remove_gate(graph, id)
 ```
 
 ### Queries
 
 ```r
-dagriculture_node(graph, node_id)
-dagriculture_edge(graph, edge_id)
-dagriculture_gate(graph, id)
+dagri_node(graph, node_id)
+dagri_edge(graph, edge_id)
+dagri_gate(graph, id)
 
-dagriculture_nodes(graph)
-dagriculture_edges(graph)
-dagriculture_gates(graph)
+dagri_nodes(graph)
+dagri_edges(graph)
+dagri_gates(graph)
 
-dagriculture_upstream(graph, node_id)
-dagriculture_downstream(graph, node_id)
-dagriculture_ancestors(graph, node_id)
-dagriculture_descendants(graph, node_id)
-dagriculture_has_path(graph, from, to)
-dagriculture_roots(graph)
-dagriculture_leaves(graph)
-dagriculture_topo_order(graph, subset = NULL)
+dagri_upstream(graph, node_id)
+dagri_downstream(graph, node_id)
+dagri_ancestors(graph, node_id)
+dagri_descendants(graph, node_id)
+dagri_has_path(graph, from, to)
+dagri_roots(graph)
+dagri_leaves(graph)
+dagri_topo_order(graph, subset = NULL)
 ```
 
 ### State And Planning
 
 ```r
-dagriculture_recompute_state(graph)
-dagriculture_eligible(graph)
-dagriculture_blocked(graph)
-dagriculture_terminal(graph)
-dagriculture_plan(graph, targets = NULL)
+dagri_recompute_state(graph)
+dagri_eligible(graph)
+dagri_blocked(graph)
+dagri_terminal(graph)
+dagri_plan(graph, targets = NULL)
 ```
 
 ### `dagriculture` Behavioral Contract
 
-- All mutating functions return a new `dagriculture_graph`.
+- All mutating functions return a new `dagri_graph`.
 - No `dagriculture` function performs I/O or depends on global state.
-- `dagriculture_recompute_state()` returns a new `dagriculture_graph` with recomputed
+- `dagri_recompute_state()` returns a new `dagri_graph` with recomputed
   structural state only.
-- `dagriculture_plan()` must not encode cache or execution assumptions.
+- `dagri_plan()` must not encode cache or execution assumptions.
 - A structurally `ready` node may still be skipped by `bayesguide` when a
   reusable result exists; completion lives in artifact/result overlays, not in
-  `dagriculture_node$state`.
+  `dagri_node$state`.
 
 ## `bayesguide` Public API
 
@@ -563,14 +563,14 @@ bg_gc(project, days = NULL)
 
 ### `dagriculture` Errors
 
-- `dagriculture_error_invalid_argument`
-- `dagriculture_error_unknown_kind`
-- `dagriculture_error_duplicate_id`
-- `dagriculture_error_not_found`
-- `dagriculture_error_cycle`
-- `dagriculture_error_contract_violation`
-- `dagriculture_error_not_eligible`
-- `dagriculture_error_state_conflict`
+- `dagri_error_invalid_argument`
+- `dagri_error_unknown_kind`
+- `dagri_error_duplicate_id`
+- `dagri_error_not_found`
+- `dagri_error_cycle`
+- `dagri_error_contract_violation`
+- `dagri_error_not_eligible`
+- `dagri_error_state_conflict`
 
 ### `bayesguide` Errors
 
@@ -606,7 +606,7 @@ When relevant, `details` should include ids or paths that localize the failure.
 
 ## Canonical Public Return Shapes
 
-### `dagriculture_plan`
+### `dagri_plan`
 
 ```r
 list(
