@@ -7,15 +7,15 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/sims1253/dagriculture/blob/master/inst/CITATION)
+[`DESCRIPTION`](https://github.com/sims1253/dagriculture/blob/master/DESCRIPTION)
 
-Scholz M (2026). *dagriculture*. R package version 0.0.0.9000,
-<https://github.com/sims1253/dagriculture>.
+Maximilian Scholz (2026). *dagriculture: Tools for dagriculture*. R
+package version 0.1.0, <https://github.com/sims1253/dagriculture>.
 
     @Manual{,
-      title = {dagriculture},
-      author = {Maximilian Scholz},
+      title = {dagriculture: Tools for dagriculture},
+      author = {{Maximilian Scholz}},
       year = {2026},
-      note = {R package version 0.0.0.9000},
+      note = {R package version 0.1.0},
       url = {https://github.com/sims1253/dagriculture},
     }
