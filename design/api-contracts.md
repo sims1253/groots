@@ -614,6 +614,7 @@ list(
   topo_order = c("node_data", "node_fit", "node_diag"),
   eligible = character(),
   blocked = list(node_fit = "gate"),
+  external_blocked = list(node_diag = "manual_review"),
   terminal = c("node_diag"),
   pending_gates = c("gate_prior_review")
 )
@@ -642,6 +643,7 @@ list(
     topo_order = c("node_data", "node_fit", "node_diag"),
     eligible = c("node_fit"),
     blocked = list(),
+    external_blocked = list(),
     terminal = c("node_diag"),
     pending_gates = character()
   ),

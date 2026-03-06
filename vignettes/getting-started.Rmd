@@ -92,7 +92,18 @@ We can generate a structural plan to see how dependencies shake out:
 plan <- dagri_plan(g_state)
 plan$targets
 plan$blocked
+plan$external_blocked
 plan$pending_gates
+```
+
+Planner-visible external holds can be layered onto planning without mutating the
+graph:
+
+```{r}
+dagri_plan(
+  g_state,
+  external_holds = list(fit = "manual_review")
+)$external_blocked
 ```
 
 ### 5. Resolve the Gate

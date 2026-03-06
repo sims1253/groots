@@ -55,10 +55,15 @@ dagri_eligible(graph)
 # See which nodes are blocked, and why
 dagri_blocked(graph)
 
+# Planner-visible external holds stay out of graph state
+dagri_plan(
+  graph,
+  external_holds = list(cleaned_data = "manual_review")
+)$external_blocked
+
 # 6. Resolve the gate to unblock the downstream node
 graph <- dagri_resolve_gate(graph, "review_gate") |>
   dagri_recompute_state()
 
 dagri_eligible(graph)
 ```
-

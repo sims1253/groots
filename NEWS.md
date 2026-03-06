@@ -1,3 +1,9 @@
+# dagriculture 0.1.1
+
+## Features
+
+- **Planner-visible external holds**: `dagri_plan()` now accepts caller-supplied `external_holds`, preserves structural `eligible` semantics, and returns propagated non-structural holds in `external_blocked` without mutating the graph.
+
 # dagriculture 0.1.0
 
 ## Features

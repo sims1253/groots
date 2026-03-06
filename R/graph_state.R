@@ -77,12 +77,100 @@ dagri_terminal <- function(graph) {
   dagri_leaves(graph)
 }
 
+dagri_empty_named_list <- function() {
+  stats::setNames(list(), character(0))
+}
+
+dagri_validate_external_holds <- function(graph, external_holds) {
+  if (!is.list(external_holds)) {
+    abort_dagri(
+      "dagri_error_invalid_argument",
+      "`external_holds` must be a named list mapping node ids to reason strings."
+    )
+  }
+
+  if (length(external_holds) == 0) {
+    return(dagri_empty_named_list())
+  }
+
+  hold_ids <- names(external_holds)
+  if (is.null(hold_ids) || anyNA(hold_ids) || any(hold_ids == "")) {
+    abort_dagri(
+      "dagri_error_invalid_argument",
+      "`external_holds` must be a named list mapping node ids to reason strings."
+    )
+  }
+
+  unknown_ids <- setdiff(hold_ids, names(graph$nodes))
+  if (length(unknown_ids) > 0) {
+    abort_dagri(
+      "dagri_error_not_found",
+      "Missing node.",
+      details = list(node_ids = unknown_ids)
+    )
+  }
+
+  invalid_reason <- !vapply(
+    external_holds,
+    function(reason) is.character(reason) && length(reason) == 1 && !is.na(reason),
+    logical(1)
+  )
+  if (any(invalid_reason)) {
+    abort_dagri(
+      "dagri_error_invalid_argument",
+      "Each external hold reason must be a single string.",
+      details = list(node_ids = hold_ids[invalid_reason])
+    )
+  }
+
+  external_holds
+}
+
+dagri_external_blocked <- function(graph, targets, topo_order, external_holds) {
+  if (length(targets) == 0) {
+    return(dagri_empty_named_list())
+  }
+
+  holds_in_scope <- external_holds[intersect(names(external_holds), targets)]
+  if (length(holds_in_scope) == 0) {
+    return(dagri_empty_named_list())
+  }
+
+  topo_rank <- stats::setNames(seq_along(topo_order), topo_order)
+  external_blocked <- dagri_empty_named_list()
+
+  for (node_id in topo_order) {
+    if (node_id %in% names(holds_in_scope)) {
+      external_blocked[[node_id]] <- holds_in_scope[[node_id]]
+      next
+    }
+
+    upstream_blockers <- intersect(dagri_upstream(graph, node_id), names(external_blocked))
+    if (length(upstream_blockers) == 0) {
+      next
+    }
+
+    inherited_from <- upstream_blockers[[which.min(topo_rank[upstream_blockers])]]
+    external_blocked[[node_id]] <- external_blocked[[inherited_from]]
+  }
+
+  if (length(external_blocked) == 0) {
+    return(dagri_empty_named_list())
+  }
+
+  external_blocked
+}
+
 #' Create an execution plan
 #'
 #' @param graph A \code{dagri_graph}.
 #' @param targets Optional target nodes.
+#' @param external_holds Optional named list mapping node ids to external hold
+#'   reason strings. These affect planning output without mutating graph state.
 #' @export
-dagri_plan <- function(graph, targets = NULL) {
+dagri_plan <- function(graph, targets = NULL, external_holds = list()) {
+  external_holds <- dagri_validate_external_holds(graph, external_holds)
+
   if (is.null(targets)) {
     targets <- names(graph$nodes)
   } else {
@@ -105,8 +193,10 @@ dagri_plan <- function(graph, targets = NULL) {
     }
   }
   if (length(blocked_list) == 0) {
-    blocked_list <- stats::setNames(list(), character(0))
+    blocked_list <- dagri_empty_named_list()
   }
+
+  external_blocked <- dagri_external_blocked(graph, targets, topo, external_holds)
 
   target_leaves <- character(0)
   for (t in targets) {
@@ -131,6 +221,7 @@ dagri_plan <- function(graph, targets = NULL) {
     topo_order = topo,
     eligible = eligible_nodes,
     blocked = blocked_list,
+    external_blocked = external_blocked,
     terminal = target_leaves,
     pending_gates = pending_gates
   )

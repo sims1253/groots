@@ -63,7 +63,15 @@ describe("graph state and planning", {
       expect_type(plan, "list")
       expect_identical(
         names(plan),
-        c("targets", "topo_order", "eligible", "blocked", "terminal", "pending_gates")
+        c(
+          "targets",
+          "topo_order",
+          "eligible",
+          "blocked",
+          "external_blocked",
+          "terminal",
+          "pending_gates"
+        )
       )
 
       expect_setequal(plan$targets, c("n1", "n2", "n3"))
@@ -73,6 +81,7 @@ describe("graph state and planning", {
       expect_type(plan$blocked, "list")
       expect_identical(plan$blocked$n2, "gate")
       expect_identical(plan$blocked$n3, "upstream_blocked")
+      expect_identical(plan$external_blocked, setNames(list(), character(0)))
 
       expect_setequal(plan$pending_gates, "gate1")
     })
@@ -82,6 +91,7 @@ describe("graph state and planning", {
       plan <- dagri_plan(g_resolved, targets = "n3")
 
       expect_identical(plan$blocked, setNames(list(), character(0)))
+      expect_identical(plan$external_blocked, setNames(list(), character(0)))
       expect_identical(plan$pending_gates, character(0))
       expect_setequal(plan$eligible, c("n1", "n2", "n3"))
     })
@@ -94,7 +104,71 @@ describe("graph state and planning", {
       expect_setequal(plan$terminal, "n1")
       expect_setequal(plan$eligible, "n1")
       expect_identical(plan$blocked, setNames(list(), character(0)))
+      expect_identical(plan$external_blocked, setNames(list(), character(0)))
       expect_identical(plan$pending_gates, character(0))
+    })
+
+    it("surfaces a single held node without changing structural eligibility", {
+      g_resolved <- dagri_resolve_gate(g, "gate1") |> dagri_recompute_state()
+      plan <- dagri_plan(
+        g_resolved,
+        targets = "n3",
+        external_holds = list(n2 = "policy_hold")
+      )
+
+      expect_setequal(plan$eligible, c("n1", "n2", "n3"))
+      expect_identical(
+        plan$external_blocked,
+        list(n2 = "policy_hold", n3 = "policy_hold")
+      )
+      expect_identical(plan$blocked, setNames(list(), character(0)))
+    })
+
+    it("propagates external holds through downstream targets", {
+      reg_branch <- dagri_registry(dagri_kind("source"), dagri_kind("process"))
+      g_branch <- dagri_graph(reg_branch) |>
+        dagri_add_node("n1", "source") |>
+        dagri_add_node("n2", "process") |>
+        dagri_add_node("n3", "process") |>
+        dagri_add_node("n4", "process") |>
+        dagri_add_edge("n1", "n2", id = "e1") |>
+        dagri_add_edge("n2", "n3", id = "e2") |>
+        dagri_add_edge("n2", "n4", id = "e3") |>
+        dagri_recompute_state()
+
+      plan <- dagri_plan(
+        g_branch,
+        targets = c("n3", "n4"),
+        external_holds = list(n2 = "awaiting_review")
+      )
+
+      expect_setequal(plan$targets, c("n1", "n2", "n3", "n4"))
+      expect_setequal(plan$eligible, c("n1", "n2", "n3", "n4"))
+      expect_identical(
+        plan$external_blocked,
+        list(
+          n2 = "awaiting_review",
+          n3 = "awaiting_review",
+          n4 = "awaiting_review"
+        )
+      )
+    })
+
+    it("reports structural blocks and external holds side by side", {
+      g_state <- dagri_recompute_state(g)
+      plan <- dagri_plan(
+        g_state,
+        targets = "n3",
+        external_holds = list(n1 = "manual_pause")
+      )
+
+      expect_identical(plan$blocked$n2, "gate")
+      expect_identical(plan$blocked$n3, "upstream_blocked")
+      expect_identical(
+        plan$external_blocked,
+        list(n1 = "manual_pause", n2 = "manual_pause", n3 = "manual_pause")
+      )
+      expect_setequal(plan$eligible, "n1")
     })
   })
 })

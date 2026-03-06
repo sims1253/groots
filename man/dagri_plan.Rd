@@ -4,12 +4,15 @@
 \alias{dagri_plan}
 \title{Create an execution plan}
 \usage{
-dagri_plan(graph, targets = NULL)
+dagri_plan(graph, targets = NULL, external_holds = list())
 }
 \arguments{
 \item{graph}{A \code{dagri_graph}.}
 
 \item{targets}{Optional target nodes.}
+
+\item{external_holds}{Optional named list mapping node ids to external hold
+reason strings. These affect planning output without mutating graph state.}
 }
 \description{
 Create an execution plan
