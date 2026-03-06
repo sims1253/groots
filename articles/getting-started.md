@@ -109,8 +109,25 @@ plan$blocked
 #> 
 #> $plot
 #> [1] "upstream_blocked"
+plan$external_blocked
+#> named list()
 plan$pending_gates
 #> [1] "approval_gate"
+```
+
+Planner-visible external holds can be layered onto planning without
+mutating the graph:
+
+``` r
+dagri_plan(
+  g_state,
+  external_holds = list(fit = "manual_review")
+)$external_blocked
+#> $fit
+#> [1] "manual_review"
+#> 
+#> $plot
+#> [1] "manual_review"
 ```
 
 ### 5. Resolve the Gate

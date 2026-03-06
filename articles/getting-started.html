@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">dagriculture</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,7 +54,7 @@
       <h1>Getting Started with dagriculture</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/sims1253/dagriculture/blob/v0.1.0/vignettes/getting-started.Rmd" class="external-link"><code>vignettes/getting-started.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/sims1253/dagriculture/blob/master/vignettes/getting-started.Rmd" class="external-link"><code>vignettes/getting-started.Rmd</code></a></small>
       <div class="d-none name"><code>getting-started.Rmd</code></div>
     </div>
 
@@ -173,8 +173,22 @@ out:</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $plot</span></span>
 <span><span class="co">#&gt; [1] "upstream_blocked"</span></span>
+<span><span class="va">plan</span><span class="op">$</span><span class="va">external_blocked</span></span>
+<span><span class="co">#&gt; named list()</span></span>
 <span><span class="va">plan</span><span class="op">$</span><span class="va">pending_gates</span></span>
 <span><span class="co">#&gt; [1] "approval_gate"</span></span></code></pre></div>
+<p>Planner-visible external holds can be layered onto planning without
+mutating the graph:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/dagri_plan.html">dagri_plan</a></span><span class="op">(</span></span>
+<span>  <span class="va">g_state</span>,</span>
+<span>  external_holds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>fit <span class="op">=</span> <span class="st">"manual_review"</span><span class="op">)</span></span>
+<span><span class="op">)</span><span class="op">$</span><span class="va">external_blocked</span></span>
+<span><span class="co">#&gt; $fit</span></span>
+<span><span class="co">#&gt; [1] "manual_review"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $plot</span></span>
+<span><span class="co">#&gt; [1] "manual_review"</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="resolve-the-gate">5. Resolve the Gate<a class="anchor" aria-label="anchor" href="#resolve-the-gate"></a>
@@ -182,7 +196,7 @@ out:</p>
 <p>Once the external condition is met, you can resolve the gate.
 Computing the state again reveals that the downstream dependencies are
 now unblocked.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g_unblocked</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dagri_resolve_gate.html">dagri_resolve_gate</a></span><span class="op">(</span><span class="va">g_state</span>, id <span class="op">=</span> <span class="st">"approval_gate"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/dagri_recompute_state.html">dagri_recompute_state</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
@@ -198,7 +212,7 @@ now unblocked.</p>
 </h2>
 <p><code>dagriculture</code> includes standard helpers for topological
 traversal and queries.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/dagri_upstream.html">dagri_upstream</a></span><span class="op">(</span><span class="va">g_unblocked</span>, <span class="st">"plot"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "fit"</span></span>
 <span><span class="fu"><a href="../reference/dagri_descendants.html">dagri_descendants</a></span><span class="op">(</span><span class="va">g_unblocked</span>, <span class="st">"data"</span><span class="op">)</span></span>
